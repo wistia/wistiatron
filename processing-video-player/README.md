@@ -6,3 +6,4 @@ This app renders video to 47x32 format and sends it to the Teensy via serial ove
 
 1. Download [Processing 3](https://processing.org/download)
 2. Install Processing command line tools, as described [here](https://github.com/processing/processing/wiki/Command-Line)
+3. Install the Video library in the Processing IDE.

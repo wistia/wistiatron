@@ -66,8 +66,8 @@ https://github.com/PaulStoffregen/OctoWS2811/tree/master/extras
 // are arranged.  If 0, each strip begins on the left for its first row,
 // then goes right to left for its second row, then left to right,
 // zig-zagging for each successive row.
-#define LED_WIDTH      60   // number of LEDs horizontally
-#define LED_HEIGHT     16   // number of LEDs vertically (must be multiple of 8)
+#define LED_WIDTH      47   // number of LEDs horizontally
+#define LED_HEIGHT     32   // number of LEDs vertically (must be multiple of 8)
 #define LED_LAYOUT     0    // 0 = even rows left->right, 1 = even rows right->left
 
 // The portion of the video image to show on this set of LEDs.  All 4 numbers

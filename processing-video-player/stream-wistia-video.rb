@@ -17,7 +17,7 @@ def ensure_local_file(hashed_id)
     response = Net::HTTP.get(uri)
     media_info = JSON.parse(response)
     puts 'Video found on Wistia.'
-    valid_assets = media_info['media']['assets'].select{|a| a['type'] == 'mp4_video'}
+    valid_assets = media_info['media']['assets'].select{|a| a['type'].include?('mp4')}
     smallest_asset = valid_assets.sort{|a,b| a['size'] <=> b['size']}.first
     puts 'Downloading.'
     `curl #{smallest_asset['url']} --output cache/#{hashed_id}.bin`

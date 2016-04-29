@@ -44,7 +44,7 @@ static final int VIDEO_HEIGHT = 100;
 
 Movie myMovie; // = new Movie(this, "/Users/robby/Downloads/Meredith Eves.mp4");
 
-float gamma = 1.9;
+float gamma = 1.75;
 
 int PINS = 8; //
 

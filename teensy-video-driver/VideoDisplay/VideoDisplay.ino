@@ -111,7 +111,6 @@ void setup() {
 }
 
 void loop() {
-//
 // wait for a Start-Of-Message character:
 //
 //   '*' = Frame of image data, with frame sync pulse to be sent
@@ -121,28 +120,7 @@ void loop() {
 //         Normally '*' is used when the sender controls the pace
 //         of playback by transmitting each frame as it should
 //         appear.
-//   
-//   '$' = Frame of image data, with frame sync pulse to be sent
-//         a specified number of microseconds after the previous
-//         frame sync.  Normally this is used when the sender
-//         transmits each frame as quickly as possible, and we
-//         control the pacing of video playback by updating the
-//         LEDs based on time elapsed from the previous frame.
-//
-//   '%' = Frame of image data, to be displayed with a frame sync
-//         pulse is received from another board.  In a multi-board
-//         system, the sender would normally transmit one '*' or '$'
-//         message and '%' messages to all other boards, so every
-//         Teensy 3.0 updates at the exact same moment.
-//
-//   '@' = Reset the elapsed time, used for '$' messages.  This
-//         should be sent before the first '$' message, so many
-//         frames are not played quickly if time as elapsed since
-//         startup or prior video playing.
-//   
-//   '?' = Query LED and Video parameters.  Teensy 3.0 responds
-//         with a comma delimited list of information.
-//
+
   int startChar = Serial.read();
 
   if (startChar == '*') {
@@ -170,78 +148,9 @@ void loop() {
       digitalWrite(13, LOW);
     }
 
-  } else if (startChar == '$') {
-    // receive a "master" frame - we send the frame sync to other boards
-    // we are controlling the video pace.  The 16 bit number is how long
-    // after the prior frame sync to wait until showing this frame
-    unsigned int usecUntilFrameSync = 0;
-    int count = Serial.readBytes((char *)&usecUntilFrameSync, 2);
-    if (count != 2) return;
-    count = Serial.readBytes((char *)drawingMemory, sizeof(drawingMemory));
-    if (count == sizeof(drawingMemory)) {
-      digitalWrite(12, HIGH);
-      pinMode(12, OUTPUT);
-      while (elapsedUsecSinceLastFrameSync < usecUntilFrameSync) /* wait */ ;
-      elapsedUsecSinceLastFrameSync -= usecUntilFrameSync;
-      digitalWrite(12, LOW);
-      // WS2811 update begins immediately after falling edge of frame sync
-      digitalWrite(13, HIGH);
-      leds.show();
-      digitalWrite(13, LOW);
-    }
-
-  } else if (startChar == '%') {
-    // receive a "slave" frame - wait to show it until the frame sync arrives
-    pinMode(12, INPUT_PULLUP);
-    unsigned int unusedField = 0;
-    int count = Serial.readBytes((char *)&unusedField, 2);
-    if (count != 2) return;
-    count = Serial.readBytes((char *)drawingMemory, sizeof(drawingMemory));
-    if (count == sizeof(drawingMemory)) {
-      elapsedMillis wait = 0;
-      while (digitalRead(12) != HIGH && wait < 30) ; // wait for sync high
-      while (digitalRead(12) != LOW && wait < 30) ;  // wait for sync high->low
-      // WS2811 update begins immediately after falling edge of frame sync
-      if (wait < 30) {
-        digitalWrite(13, HIGH);
-        leds.show();
-        digitalWrite(13, LOW);
-      }
-    }
-
-  } else if (startChar == '@') {
-    // reset the elapsed frame time, for startup of '$' message playing
-    elapsedUsecSinceLastFrameSync = 0;
-
-  } else if (startChar == '?') {
-    // when the video application asks, give it all our info
-    // for easy and automatic configuration
-    Serial.print(LED_WIDTH);
-    Serial.write(',');
-    Serial.print(LED_HEIGHT);
-    Serial.write(',');
-    Serial.print(LED_LAYOUT);
-    Serial.write(',');
-    Serial.print(0);
-    Serial.write(',');
-    Serial.print(0);
-    Serial.write(',');
-    Serial.print(VIDEO_XOFFSET);
-    Serial.write(',');
-    Serial.print(VIDEO_YOFFSET);
-    Serial.write(',');
-    Serial.print(VIDEO_WIDTH);
-    Serial.write(',');
-    Serial.print(VIDEO_HEIGHT);
-    Serial.write(',');
-    Serial.print(0);
-    Serial.write(',');
-    Serial.print(0);
-    Serial.write(',');
-    Serial.print(0);
-    Serial.println();
-
-  } else if (startChar >= 0) {
+  }
+  
+  else if (startChar >= 0) {
     // discard unknown characters
   }
 }

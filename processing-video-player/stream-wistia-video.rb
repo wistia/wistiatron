@@ -29,7 +29,11 @@ end
 
 def get_serial_port
   puts 'Locating serial port.'
-  `ls /dev/tty.usbmodem*`.split("\n").first
+  if `uname -a`.include?('raspberrypi')
+    `ls /dev/ttyACM*`.split("\n").first
+  else
+    `ls /dev/tty.usbmodem*`.split("\n").first
+  end
 end
 
 ensure_local_file HASHED_ID

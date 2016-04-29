@@ -1,25 +1,26 @@
 require 'rubygems'
 require 'bundler/setup'
 
-require 'dotenv'
-require 'wistia'
-
-Dotenv.load
-Wistia.password = ENV['WISTIA_API_PASSWORD']
 # Usage:
 # ./stream-wistia-video <hashed_id>
 
+require 'net/http'
+require 'json'
+require 'pp'
 HASHED_ID = ARGV[0]
 
 def ensure_local_file(hashed_id)
   Dir.mkdir('cache') if !File.exists?('cache')
   if !File.exists?("cache/#{hashed_id}.bin")
-    puts 'Video not found locally.'
-    media = Wistia::Media.find(HASHED_ID)
+    puts 'Video not found locally. Checking Wistia.'
+    uri = URI("https://fast.wistia.com/embed/medias/#{HASHED_ID}.json")
+    response = Net::HTTP.get(uri)
+    media_info = JSON.parse(response)
     puts 'Video found on Wistia.'
-    media_asset = media.assets.select{|i| i.type == 'OriginalFile'}.first
+    valid_assets = media_info['media']['assets'].select{|a| a['type'] == 'mp4_video'}
+    smallest_asset = valid_assets.sort{|a,b| a['size'] <=> b['size']}.first
     puts 'Downloading.'
-    `curl #{media_asset.url} --output cache/#{hashed_id}.bin`
+    `curl #{smallest_asset['url']} --output cache/#{hashed_id}.bin`
     puts 'Download complete.'
   else
     puts 'Video found locally.'

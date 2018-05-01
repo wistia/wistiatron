@@ -33,6 +33,7 @@
 import processing.video.*;
 import processing.serial.*;
 import java.awt.Rectangle;
+import gohai.glvideo.*;
 
 static final int LED_WIDTH = 47;
 static final int LED_HEIGHT = 32;
@@ -42,7 +43,8 @@ static final int VIDEO_WIDTH = 100;
 static final int VIDEO_HEIGHT = 100;
 
 
-Movie myMovie; // = new Movie(this, "/Users/robby/Downloads/Meredith Eves.mp4");
+//Movie myMovie; // = new Movie(this, "/Users/robby/Downloads/Meredith Eves.mp4");
+GLMovie myMovie;
 
 float gamma = 1.75;
 
@@ -63,7 +65,8 @@ void setup() {
   println("Specified video: " + args[1]);
   println();
   
-  myMovie = new Movie(this, args[1]);
+  //myMovie = new Movie(this, args[1]);
+  myMovie = new GLMovie(this, args[1]);
 
   String[] list = Serial.list();
   delay(20);
@@ -75,7 +78,7 @@ void setup() {
   for (int i=0; i < 256; i++) {
     gammatable[i] = (int)(pow((float)i / 255.0, gamma) * 255.0 + 0.5);
   }
-  size(480, 400);  // create the window
+  size(47, 32, P2D);  // create the window
   myMovie.loop();  // start the movie :-)
 }
 
@@ -172,6 +175,9 @@ void serialConfigure() {
 
 // draw runs every time the screen is redrawn - show the movie...
 void draw() {
+  if (myMovie.available()) {
+    myMovie.read();
+  }
   // show the original video
   image(myMovie, 0, 80);
   

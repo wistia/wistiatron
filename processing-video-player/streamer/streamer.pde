@@ -64,8 +64,7 @@ void setup() {
   println("Specified port: " + args[0]);
   println("Specified video: " + args[1]);
   println();
-  
-  //myMovie = new Movie(this, args[1]);
+
   myMovie = new GLMovie(this, args[1]);
 
   String[] list = Serial.list();
@@ -82,12 +81,12 @@ void setup() {
   myMovie.loop();  // start the movie :-)
 }
 
- 
+
 // movieEvent runs for each new frame of movie data
-void movieEvent(Movie m) {
+void simulateMovieEvent(GLMovie m) {
   // read the movie's next frame
   m.read();
-  
+
   //if (framerate == 0) framerate = m.getSourceFrameRate();
   framerate = 30.0; // TODO, how to read the frame rate???
 
@@ -106,7 +105,6 @@ void movieEvent(Movie m) {
   ledData[1] = (byte)(usec);   // request the frame sync pulse
   ledData[2] = (byte)(usec >> 8); // at 75% of the frame time
   // send the raw data to the LEDs  :-)
-  println("LED data: " + ledData);
   ledSerial[0].write(ledData);
 }
 
@@ -119,7 +117,7 @@ void image2data(PImage image, byte[] data, boolean layout) {
 
   int linesPerPin = image.height / 8; // XXX this seems to break when using 6 instead of 8
   int pixel[] = new int[PINS];
-  
+
   for (y = 0; y < linesPerPin; y++) {
     if ((y & 1) == (layout ? 0 : 1)) {
       // even numbered rows are left to right
@@ -147,7 +145,7 @@ void image2data(PImage image, byte[] data, boolean layout) {
         data[offset++] = b;
       }
     }
-  } 
+  }
 }
 
 // translate the 24 bit color from RGB to the actual
@@ -177,11 +175,11 @@ void serialConfigure() {
 // draw runs every time the screen is redrawn - show the movie...
 void draw() {
   if (myMovie.available()) {
-    myMovie.read();
+    simulateMovieEvent(myMovie);
   }
   // show the original video
   image(myMovie, 0, 80);
-  
+
   // then try to show what was most recently sent to the LEDs
   // by displaying all the images for each port.
   // compute the intended size of the entire LED array

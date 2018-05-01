@@ -1,6 +1,3 @@
-require 'rubygems'
-require 'bundler/setup'
-
 # Usage:
 # ./stream-wistia-video <hashed_id>
 

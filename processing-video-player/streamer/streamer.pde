@@ -106,6 +106,7 @@ void movieEvent(Movie m) {
   ledData[1] = (byte)(usec);   // request the frame sync pulse
   ledData[2] = (byte)(usec >> 8); // at 75% of the frame time
   // send the raw data to the LEDs  :-)
+  println("LED data: " + ledData);
   ledSerial[0].write(ledData);
 }
 

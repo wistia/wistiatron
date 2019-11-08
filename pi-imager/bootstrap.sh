@@ -48,7 +48,7 @@ chmod +x restart-wistiatron.sh
 ssh-keyscan github.com >> ~/.ssh/known_hosts
 git clone git@github.com:wistia/wistiatron.git
 git clone git@github.com:wistia/wistiatron-server.git
-cd wistiatron-server && git reset --hard origin/rpi && cd ..
+cd wistiatron-server && git reset --hard origin/master && cd ..
 
 (crontab -l 2>/dev/null; echo '@reboot sudo -E su -c "source /home/pi/.profile && cd /home/pi/wistiatron-server && bundle && bundle exec rackup > /home/pi/wistiatron.log 2>&1 &" pi') | sudo crontab -
 

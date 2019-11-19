@@ -12,7 +12,7 @@
 # 3. I attempted to use Raspbian Buster, but the video output did not work.
 
 sudo apt-get -y update
-sudo apt-get -y install git ruby ruby-dev
+sudo apt-get -y install git ruby ruby-dev redis-server
 
 sudo gem install bundler
 sudo gem install bundler:1.15.4

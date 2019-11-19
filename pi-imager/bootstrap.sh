@@ -12,7 +12,7 @@
 # 3. I attempted to use Raspbian Buster, but the video output did not work.
 
 sudo apt-get -y update
-sudo apt-get -y install git ruby ruby-dev
+sudo apt-get -y install git ruby ruby-dev redis-server
 
 sudo gem install bundler
 sudo gem install bundler:1.15.4
@@ -50,7 +50,7 @@ git clone git@github.com:wistia/wistiatron.git
 git clone git@github.com:wistia/wistiatron-server.git
 cd wistiatron-server && git reset --hard origin/master && cd ..
 
-(crontab -l 2>/dev/null; echo '@reboot sudo -E su -c "source /home/pi/.profile && cd /home/pi/wistiatron-server && bundle && bundle exec rackup > /home/pi/wistiatron.log 2>&1 &" pi') | sudo crontab -
+(crontab -l 2>/dev/null; echo '@reboot sudo -E su -c "source /home/pi/.profile && cd /home/pi/wistiatron-server && bundle && bundle exec rackup > /home/pi/wistiatron.log 2>&1 &" pi; @reboot sudo -E su -c "source /home/pi/.profile && service redis-server start') | sudo crontab -
 
 sudo apt-get -y install nginx
 sudo rm /etc/nginx/sites-available/default
